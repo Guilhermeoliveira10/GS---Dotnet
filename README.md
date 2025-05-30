@@ -29,7 +29,7 @@ Oferecer uma solução tecnológica para:
 ## 🚀 Como Executar o Projeto
 
 ```bash
-git clone https://github.com/seuusuario/safezone-api.git
+git clone https://github.com/Guilhermeoliveira10/GS---Dotnet.git
 cd safezone-api/SafeZone.API
 dotnet build
 dotnet ef database update --project ../SafeZone.Infrastructure --startup-project .
