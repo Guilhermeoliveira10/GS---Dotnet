@@ -34,53 +34,58 @@ cd safezone-api/SafeZone.API
 dotnet build
 dotnet ef database update --project ../SafeZone.Infrastructure --startup-project .
 dotnet run
+```
 
-🔌 Endpoints Disponíveis
-🔔 Alertas
-GET /api/alert
+Acesse: [https://localhost:5001/swagger](https://localhost:5001/swagger)
 
-GET /api/alert/{id}
+---
 
-POST /api/alert
+## 🔌 Endpoints Disponíveis
 
-PUT /api/alert/{id}
+### 🔔 Alertas
 
-DELETE /api/alert/{id}
+- `GET /api/alert`
+- `GET /api/alert/{id}`
+- `POST /api/alert`
+- `PUT /api/alert/{id}`
+- `DELETE /api/alert/{id}`
 
-🆘 Pedidos de Ajuda
-GET /api/helprequest
+### 🆘 Pedidos de Ajuda
 
-GET /api/helprequest/{id}
+- `GET /api/helprequest`
+- `GET /api/helprequest/{id}`
+- `POST /api/helprequest`
+- `PUT /api/helprequest/{id}`
+- `DELETE /api/helprequest/{id}`
 
-POST /api/helprequest
+### ⚠️ Zonas de Risco
 
-PUT /api/helprequest/{id}
+- `GET /api/riskzone`
+- `GET /api/riskzone/{id}`
+- `POST /api/riskzone`
+- `PUT /api/riskzone/{id}`
+- `DELETE /api/riskzone/{id}`
 
-DELETE /api/helprequest/{id}
+---
 
-⚠️ Zonas de Risco
-GET /api/riskzone
+## 🧪 Testes
 
-GET /api/riskzone/{id}
+```bash
+dotnet run
+```
 
-POST /api/riskzone
+Acesse o Swagger em: [https://localhost:5001/swagger](https://localhost:5001/swagger)  
+Teste os endpoints de forma interativa pela interface gerada.
 
-PUT /api/riskzone/{id}
+---
 
-DELETE /api/riskzone/{id}
+## 📂 Estrutura de Pastas
 
-🧪 Testes
-Execute dotnet run
-
-Acesse o Swagger: https://localhost:5001/swagger
-
-Teste os endpoints interativamente
-
-📂 Estrutura de Pastas
-pgsql
-Copiar
-Editar
+```
 SafeZone.API                --> Camada de API e Controllers
 SafeZone.Application        --> Camada de regras de negócio (futura expansão)
 SafeZone.Domain             --> Entidades
 SafeZone.Infrastructure     --> DbContext, Migrations e Repositórios
+```
+
+---
