@@ -37,7 +37,16 @@ public class RiskZoneController : ControllerBase
     public async Task<IActionResult> Update(int id, RiskZone riskZone)
     {
         if (id != riskZone.Id) return BadRequest();
-        await _repository.UpdateAsync(riskZone);
+
+        var existente = await _repository.GetByIdAsync(id);
+        if (existente is null) return NotFound();
+
+        existente.Local = riskZone.Local;
+        existente.NivelRisco = riskZone.NivelRisco;
+        existente.Latitude = riskZone.Latitude;
+        existente.Longitude = riskZone.Longitude;
+
+        await _repository.UpdateAsync(existente);
         return NoContent();
     }
 
@@ -46,6 +55,7 @@ public class RiskZoneController : ControllerBase
     {
         var zone = await _repository.GetByIdAsync(id);
         if (zone is null) return NotFound();
+
         await _repository.DeleteAsync(zone);
         return NoContent();
     }

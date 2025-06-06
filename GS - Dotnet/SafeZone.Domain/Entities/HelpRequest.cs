@@ -1,7 +1,3 @@
-using System;
-
-namespace SafeZone.Domain.Entities;
-
 public class HelpRequest
 {
     public int Id { get; set; }

@@ -1,7 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SafeZone.Infrastructure.Context;
 using Microsoft.OpenApi.Models;
-using SafeZone.Infrastructure.Repositories; // 👈 Importar os repositórios
+using SafeZone.Infrastructure.Context;
+using SafeZone.Infrastructure.Repositories;
+using SafeZone.Application.Messaging;
+using SafeZone.Application.ML; // ✅ Importante para injetar MLModelPredictor
+using Microsoft.AspNetCore.RateLimiting;
+using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,15 +13,42 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<SafeZoneDbContext>(options =>
     options.UseSqlite("Data Source=safezone.db"));
 
-// REGISTRAR REPOSITÓRIOS
+// REPOSITÓRIOS
 builder.Services.AddScoped<AlertRepository>();
 builder.Services.AddScoped<HelpRequestRepository>();
 builder.Services.AddScoped<RiskZoneRepository>();
 
-// CONFIGURAR CONTROLLERS
+// RABBITMQ PRODUCER
+builder.Services.AddSingleton<RabbitMqProducer>();
+
+// RATE LIMITING
+builder.Services.AddRateLimiter(options =>
+{
+    options.AddFixedWindowLimiter("fixed", config =>
+    {
+        config.Window = TimeSpan.FromSeconds(10);
+        config.PermitLimit = 5;
+        config.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+        config.QueueLimit = 2;
+    });
+
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+});
+
+// ✅ CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
+
 builder.Services.AddControllers();
 
-// CONFIGURAR SWAGGER COM COMENTÁRIOS XML
+// SWAGGER
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -28,21 +59,14 @@ builder.Services.AddSwaggerGen(c =>
         Description = "API para apoio a comunidades em eventos extremos"
     });
 
-    // Comentários XML (documentação de métodos)
     var xmlFile = "SafeZone.API.xml";
     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
     c.IncludeXmlComments(xmlPath);
 });
 
-// 🚧 (OPCIONAL - PRÓXIMAS ETAPAS)
-// builder.Services.AddMemoryCache(); // Para RateLimit
-// builder.Services.Configure<IpRateLimitOptions>(...); // Para RateLimit
-// builder.Services.AddInMemoryRateLimiting();
-// builder.Services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
-
 var app = builder.Build();
 
-// CONFIGURAR PIPELINE HTTP
+// PIPELINE
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -50,10 +74,12 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-// app.UseIpRateLimiting(); // Rate Limit (se configurado)
+app.UseRateLimiter();
+
+// ✅ ATIVAR CORS
+app.UseCors("AllowAll");
+
 app.UseAuthorization();
-
-app.MapControllers(); // ATIVA OS CONTROLLERS
-
+app.MapControllers();
 app.Run();
-    
+

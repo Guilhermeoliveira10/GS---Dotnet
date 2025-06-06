@@ -16,9 +16,12 @@ public class AlertController : ControllerBase
         _repository = repository;
     }
 
+    // GET: api/alert
     [HttpGet]
-    public async Task<IActionResult> GetAll() => Ok(await _repository.GetAllAsync());
+    public async Task<IActionResult> GetAll()
+        => Ok(await _repository.GetAllAsync());
 
+    // GET: api/alert/5
     [HttpGet("{id}")]
     public async Task<IActionResult> Get(int id)
     {
@@ -26,6 +29,7 @@ public class AlertController : ControllerBase
         return alert is null ? NotFound() : Ok(alert);
     }
 
+    // POST: api/alert
     [HttpPost]
     public async Task<IActionResult> Create(Alert alert)
     {
@@ -33,19 +37,30 @@ public class AlertController : ControllerBase
         return CreatedAtAction(nameof(Get), new { id = alert.Id }, alert);
     }
 
+    // PUT: api/alert/5
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(int id, Alert alert)
     {
         if (id != alert.Id) return BadRequest();
-        await _repository.UpdateAsync(alert);
+
+        var existente = await _repository.GetByIdAsync(id);
+        if (existente is null) return NotFound();
+
+        existente.Titulo = alert.Titulo;
+        existente.Tipo = alert.Tipo;
+        existente.Data = alert.Data;
+
+        await _repository.UpdateAsync(existente);
         return NoContent();
     }
 
+    // DELETE: api/alert/5
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
         var alert = await _repository.GetByIdAsync(id);
         if (alert is null) return NotFound();
+
         await _repository.DeleteAsync(alert);
         return NoContent();
     }
