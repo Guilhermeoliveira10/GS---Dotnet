@@ -24,5 +24,8 @@ RUN dotnet publish "SafeZone.API.csproj" -c Release -o /app/publish
 # Defina o contêiner final (utilize a imagem ASP.NET Core de runtime)
 FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS final
 WORKDIR /app
-COPY --from=publish /app/publish .
+
+# Copie os arquivos da etapa de build/publish para a etapa final
+COPY --from=build /app/publish .
+
 ENTRYPOINT ["dotnet", "SafeZone.API.dll"]
