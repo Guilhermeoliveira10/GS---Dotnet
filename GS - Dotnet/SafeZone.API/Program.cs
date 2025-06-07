@@ -67,11 +67,12 @@ builder.Services.AddSwaggerGen(c =>
 var app = builder.Build();
 
 // PIPELINE
-if (app.Environment.IsDevelopment())
+app.UseSwagger();
+app.UseSwaggerUI(c =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "SafeZone API V1");
+    c.RoutePrefix = "swagger"; // O Swagger será acessado em /swagger
+});
 
 app.UseHttpsRedirection();
 app.UseRateLimiter();
@@ -82,4 +83,3 @@ app.UseCors("AllowAll");
 app.UseAuthorization();
 app.MapControllers();
 app.Run();
-
