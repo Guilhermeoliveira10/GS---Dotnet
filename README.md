@@ -1,8 +1,11 @@
 ## 👨‍💻 Autores
 
 Guilherme Augusto de Oliveira - RM:554176
+
 Lucas Martinez Lopes - RM: 553816
+
 Luiz Alecsander Viana — RM: 553034  
+
 
 FIAP - Advanced Business Development with .NET
 
