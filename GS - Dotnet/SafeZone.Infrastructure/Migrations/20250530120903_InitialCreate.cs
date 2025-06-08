@@ -15,11 +15,10 @@ namespace SafeZone.Infrastructure.Migrations
                 name: "Alerts",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Titulo = table.Column<string>(type: "TEXT", nullable: false),
-                    Tipo = table.Column<string>(type: "TEXT", nullable: false),
-                    Data = table.Column<DateTime>(type: "TEXT", nullable: false)
+                    Id = table.Column<decimal>(type: "NUMBER", nullable: false),  // Usando NUMBER para o tipo de dados inteiro
+                    Titulo = table.Column<string>(type: "VARCHAR2(255)", nullable: false),  // Usando VARCHAR2 para texto
+                    Tipo = table.Column<string>(type: "VARCHAR2(255)", nullable: false),   // Usando VARCHAR2 para texto
+                    Data = table.Column<DateTime>(type: "DATE", nullable: false)  // Usando DATE para armazenar data
                 },
                 constraints: table =>
                 {
