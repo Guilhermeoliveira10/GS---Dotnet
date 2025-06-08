@@ -1,91 +1,140 @@
-# 🌐 SafeZone API
+## 👨‍💻 Autores
 
-API desenvolvida em ASP.NET Core para auxiliar comunidades em eventos extremos com alertas, pedidos de ajuda e mapeamento de áreas de risco.
+Guilherme Augusto de Oliveira - RM:554176
+Lucas Martinez Lopes - RM: 553816
+Luiz Alecsander Viana — RM: 553034  
 
----
+FIAP - Advanced Business Development with .NET
 
-## 📌 Objetivo
 
-Oferecer uma solução tecnológica para:
 
-- Emitir **alertas** sobre desastres naturais (enchentes, calor extremo, etc)
-- Permitir **pedidos de ajuda** geolocalizados
-- Exibir **zonas de risco** em cidades afetadas
 
----
+# 🌐 SafeZone API - Projeto .NET
 
-## 🛠️ Tecnologias Utilizadas
-
-- ✅ ASP.NET Core 8 (Web API)
-- ✅ Entity Framework Core + SQLite
-- ✅ Swagger/OpenAPI
-- ✅ Injeção de Dependência com Scoped
-- ✅ Arquitetura em camadas: API, Domain, Application, Infrastructure
-- ✅ RESTful API (sem HATEOAS)
-- 🚧 Pronto para extensão com ML.NET, RabbitMQ e xUnit
+Este é o repositório oficial da **API SafeZone**, desenvolvida para apoiar comunidades em situações de risco climático. Esta solução foi construída como parte da disciplina **Advanced Business Development with .NET**, utilizando boas práticas de desenvolvimento moderno com .NET 8, integração com Oracle DB, mensageria com RabbitMQ e inteligência preditiva com ML.NET.
 
 ---
 
-## 🚀 Como Executar o Projeto
+## ✅ Funcionalidades
+
+- CRUD completo para 3 entidades:
+  - **HelpRequest** (Pedidos de Ajuda)
+  - **Alert** (Alertas)
+  - **RiskZone** (Zonas de Risco)
+- Integração com banco de dados **Oracle SQL**
+- **Swagger** para documentação automática da API
+- **Rate Limiting** para controle de acesso (via `Microsoft.AspNetCore.RateLimiting`)
+- Implementação de **HATEOAS** nas respostas
+- Microsserviço de **mensageria com RabbitMQ**
+- Modelo preditivo com **ML.NET**
+- **Testes automatizados** com xUnit
+
+---
+
+## 🚀 Tecnologias Utilizadas
+
+- ASP.NET Core 8 (Web API)
+- Entity Framework Core 8
+- Oracle Database (via `Oracle.EntityFrameworkCore`)
+- Swagger (Swashbuckle)
+- ML.NET (Machine Learning)
+- RabbitMQ (mensageria)
+- xUnit e Moq (testes)
+- Render.com (deploy gratuito)
+
+---
+
+## 🧭 Como Executar o Projeto
+
+1. Clone o repositório:
+   ```bash
+   git clone https://github.com/Guilhermeoliveira10/GS---Dotnet.git
+   ```
+
+2. Navegue até o diretório do projeto:
+   ```bash
+   cd SafeZone/SafeZone.API
+   ```
+
+3. Configure a **string de conexão do Oracle** em `appsettings.json`:
+   ```json
+   "ConnectionStrings": {
+     "DefaultConnection": "User Id=SEU_USUARIO;Password=SUA_SENHA;Data Source=SEU_HOST:PORTA/SEU_SERVICO"
+   }
+   ```
+
+4. Restaure os pacotes e rode as migrações (caso necessário):
+   ```bash
+   dotnet restore
+   dotnet ef database update --project ../SafeZone.Infrastructure
+   ```
+
+5. Rode a aplicação:
+   ```bash
+   dotnet run
+   ```
+
+6. Acesse a documentação no navegador:
+   ```
+   https://localhost:PORT/swagger
+   ```
+
+---
+
+## 📘 Documentação dos Endpoints
+
+Todos os endpoints estão documentados e disponíveis via Swagger, incluindo exemplos de requisição e resposta.
+
+- `GET /api/HelpRequest`
+- `POST /api/HelpRequest`
+- `GET /api/Alert`
+- `POST /api/Alert`
+- `POST /api/Prediction/predict`
+
+---
+
+## 🧪 Instruções de Testes
+
+Os testes unitários estão localizados no projeto `SafeZone.Tests`.
+
+Execute os testes com o comando:
 
 ```bash
-git clone https://github.com/Guilhermeoliveira10/GS---Dotnet.git
-cd safezone-api/SafeZone.API
-dotnet build
-dotnet ef database update --project ../SafeZone.Infrastructure --startup-project .
-dotnet run
+dotnet test
 ```
 
-Acesse: [https://localhost:5001/swagger](https://localhost:5001/swagger)
+- Os testes utilizam `xUnit` e `Moq`
+- A cobertura envolve o serviço de HelpRequest
 
 ---
 
-## 🔌 Endpoints Disponíveis
+## 📲 Integração com Mobile
 
-### 🔔 Alertas
+Essa API será consumida por um **aplicativo React Native** na disciplina de **Mobile Application Development**. O app permitirá que usuários:
 
-- `GET /api/alert`
-- `GET /api/alert/{id}`
-- `POST /api/alert`
-- `PUT /api/alert/{id}`
-- `DELETE /api/alert/{id}`
-
-### 🆘 Pedidos de Ajuda
-
-- `GET /api/helprequest`
-- `GET /api/helprequest/{id}`
-- `POST /api/helprequest`
-- `PUT /api/helprequest/{id}`
-- `DELETE /api/helprequest/{id}`
-
-### ⚠️ Zonas de Risco
-
-- `GET /api/riskzone`
-- `GET /api/riskzone/{id}`
-- `POST /api/riskzone`
-- `PUT /api/riskzone/{id}`
-- `DELETE /api/riskzone/{id}`
+- Criem e consultem pedidos de ajuda
+- Recebam alertas em tempo real
+- Consultem zonas de risco
+- Recebam previsões de risco baseadas em idade/localização
 
 ---
 
-## 🧪 Testes
+## 🧠 Inteligência Artificial (ML.NET)
 
-```bash
-dotnet run
+O endpoint `POST /api/Prediction/predict` recebe um JSON com:
+```json
+{
+  "idade": 35,
+  "localizacao": "Zona Sul"
+}
 ```
 
-Acesse o Swagger em: [https://localhost:5001/swagger](https://localhost:5001/swagger)  
-Teste os endpoints de forma interativa pela interface gerada.
+E retorna a predição de risco com base no modelo treinado com ML.NET.
 
 ---
 
-## 📂 Estrutura de Pastas
+## 📬 Mensageria com RabbitMQ
 
-```
-SafeZone.API                --> Camada de API e Controllers
-SafeZone.Application        --> Camada de regras de negócio (futura expansão)
-SafeZone.Domain             --> Entidades
-SafeZone.Infrastructure     --> DbContext, Migrations e Repositórios
-```
+Toda nova criação de HelpRequest envia uma mensagem para a fila `helprequest-queue`, processada por um serviço `BackgroundService` implementado em `HelpRequestConsumer.cs`.
 
 ---
